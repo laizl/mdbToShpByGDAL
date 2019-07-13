@@ -40,7 +40,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	for (int i = 0; i < tableNames.size(); i++) {
 		printf("%s", tableNames[i].data());
 		OGRFieldDefn Field((char*)tableNames[i].data(), OFTString);
-		Field.SetWidth(46);
+		Field.SetWidth(128);
 		poLayer->CreateField(&Field);
 	}
 	OGRPolygon ogrPolygon;
@@ -50,7 +50,8 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		poFeature = OGRFeature::CreateFeature(poLayer->GetLayerDefn());
 		for (int j = 0; j < tableNames.size(); j++)
 		{
-			poFeature->SetField(tableNames[j].data(), tableNames[i][j]);
+			poFeature->SetField(tableNames[j].data(), tableValues[i][j].data());
+			std::cout << tableValues[i][j].data() << std::endl;
 		}
 		//设置点的坐标
 		OGRPoint point;

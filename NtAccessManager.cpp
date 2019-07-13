@@ -57,19 +57,19 @@ std::vector<std::string> NtAccessManager::queryTableName()
 
 	QSqlQuery sql_query(dbconn);
 
-	sql_query.exec(QObject::tr("select * from ZKGK"));
+	sql_query.exec(QObject::tr("select * from ZKFC"));
 
 	int fieldCount = sql_query.record().count();
-
+	
 	int i;
 	QString fieldName;
 	for (i = 0; i < fieldCount; i++) {
-		//fieldName = sql_query.record().fieldName(i).toUtf8();
 		tableNames.push_back(std::string(sql_query.record().field(i).name().toLocal8Bit()));
-		//std::cout<<sql_query.record().field(i).type()<<std::endl;
 		tableLength ++;
+		std::cout << sql_query.record().field(sql_query.record().field(i).name()).type() << std::endl;
 	}
-	
+	//tableNames.push_back("path");
+	//tableLength++;
 	return tableNames;
 }
 
@@ -81,7 +81,7 @@ std::vector<std::vector<double>> NtAccessManager::readLatLong()
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
 	QSqlQuery sql_query(dbconn);
-	sql_query.exec(QObject::tr("SELECT N,E FROM ZKGK"));
+	sql_query.exec(QObject::tr("SELECT N,E FROM ZKFC"));
 
 	//经纬度依次存入Vector
 	while (sql_query.next())
@@ -102,7 +102,7 @@ std::vector<std::vector<std::string>> NtAccessManager::readTableValue()
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
 	QSqlQuery sql_query(dbconn);
-	sql_query.exec(QObject::tr("SELECT * FROM ZKGK"));
+	sql_query.exec(QObject::tr("SELECT * FROM ZKFC"));
 
 	//经纬度依次存入Vector
 	while (sql_query.next())
@@ -112,8 +112,10 @@ std::vector<std::vector<std::string>> NtAccessManager::readTableValue()
 			std::string value = sql_query.value(i).toString().toLocal8Bit();
 			temp.push_back(value);
 		}
+		//加入Path
+		//temp.push_back("E:/ZK");
 		tableValues.push_back(temp);
-	}
+	}	
 	return tableValues;
 }
 

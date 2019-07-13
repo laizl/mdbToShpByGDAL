@@ -4,13 +4,13 @@
 #include "NtAccessManager.h"
 
 void main(int argc, char *argv[]) {
-	//将cmd获取路径参数
-	/*int i;
-	printf("Total %d arguments\n", argc);
-	for (i = 0; i<argc; i++)
-	{
-		printf("Argument %d = %s\n", i + 1, argv[i]);
+	
+	/*if (argc <= 3) {
+		std::cout << "参数不全" << std::endl;
+		return;
 	}*/
+	std::string  path = "E:/ZK";
+	//std::string  Filepath = argv[3];
 	//从数据库中获取数据
 	NtAccessManager *ntAccessManager = new NtAccessManager();
 	ntAccessManager->connectDB();
@@ -18,17 +18,16 @@ void main(int argc, char *argv[]) {
 	std::vector<std::vector<double>> latLongS = ntAccessManager->readLatLong();
 	std::vector<std::vector<std::string>> tableValues = ntAccessManager->readTableValue();
 	
-	for (int i = 0; i < tableValues.size(); i++) {
-		for (int j = 0; j < tableValues.size(); j++) {
-			std::cout << tableValues[i][j].data() << std::endl;
-		}
+	std::vector<std::string> temp;
+	for (int i = 0; i < tableNameS.size(); i++) {
+		temp.push_back(path);
 	}
-	
+	tableValues.push_back(temp);
 	//将数据写入shp文件
-	std::cout << tableNameS.size() << std::endl;
+	//std::cout << tableNameS.size() << std::endl;
 	autoTracktool *aTool = new autoTracktool();
 	aTool->createShpFileTest();
-	aTool->exportPolygonToShpFile(tableNameS,"E:\\test\\1.shp", latLongS,tableValues);
+	aTool->exportPolygonToShpFile(tableNameS,"Filepath", latLongS,tableValues);
 	
 	return ;
 }
