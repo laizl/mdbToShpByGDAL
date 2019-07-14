@@ -3,7 +3,7 @@
 #include "autotracktool.h"
 #include "NtAccessManager.h"
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	
 	/*if (argc <= 3) {
 		std::cout << "参数不全" << std::endl;
@@ -29,5 +29,5 @@ void main(int argc, char *argv[]) {
 	aTool->createShpFileTest();
 	aTool->exportPolygonToShpFile(tableNameS,"Filepath", latLongS,tableValues);
 	
-	return ;
+	return 0;
 }

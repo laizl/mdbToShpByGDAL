@@ -1,17 +1,19 @@
-#include <QVector>
 #include <iostream>
-#include "qt_windows.h"
-#include "ntaccessmanager.h"
-#include <qapplication.h>
-#include <QPluginLoader.h>
-#include <qdir.h>
+
+#include <QVector>
+
+#include <QApplication>
+#include <QPluginLoader>
+#include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQueryModel>
 #include <QSqlQuery> 
-#include <qsqlrecord.h>
-#include <qsqlfield.h>
-#include <qvariant.h>
+#include <QSqlRecord>
+#include <QSqlField>
+#include <QVariant>
 
+//#include "qt_windows.h"
+#include "NtAccessManager.h"
 
 
 NtAccessManager::NtAccessManager()
@@ -109,7 +111,7 @@ std::vector<std::vector<std::string>> NtAccessManager::readTableValue()
 	{
 		std::vector<std::string> temp;
 		for (int i = 0; i < tableLength; i++) {
-			std::string value = sql_query.value(i).toString().toLocal8Bit();
+			std::string value = sql_query.value(i).toString().toLocal8Bit().toStdString();
 			temp.push_back(value);
 		}
 		//加入Path
