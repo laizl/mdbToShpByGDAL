@@ -19,8 +19,8 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		return 0;
 	}
 
-	//²½Öè2¡¢´´½¨¿Õ¼ä×ø±êÏµ
-	//Ô­Ê¼Õ¤¸ñÓ°Ïì¿Õ¼ä²Î¿¼ÐÅÏ¢Ö±½Ó¸³Öµ¸øÊ¸Á¿ÎÄ¼þ
+	//æ­¥éª¤2ã€åˆ›å»ºç©ºé—´åæ ‡ç³»
+	//åŽŸå§‹æ …æ ¼å½±å“ç©ºé—´å‚è€ƒä¿¡æ¯ç›´æŽ¥èµ‹å€¼ç»™çŸ¢é‡æ–‡ä»¶
 
 	//const char *WKT = poDstDS->GetProjectionRef();
 	OGRSpatialReference* oSRS = new OGRSpatialReference("");
@@ -36,7 +36,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		printf("Layer creation failed.\n");
 		return 0;
 	}
-	//½«ÊôÐÔ×Ö¶Î½øÐÐÌîÐ´
+	//å°†å±žæ€§å­—æ®µè¿›è¡Œå¡«å†™
 	for (int i = 0; i < tableNames.size(); i++) {
 		printf("%s", tableNames[i].data());
 		OGRFieldDefn Field((char*)tableNames[i].data(), OFTString);
@@ -44,7 +44,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		poLayer->CreateField(&Field);
 	}
 	OGRPolygon ogrPolygon;
-	//´´½¨Ò»¸öOGRPoint¶ÔÏó
+	//åˆ›å»ºä¸€ä¸ªOGRPointå¯¹è±¡
 	for (int i = 0; i < polygon2DPointList.size(); i++) {
 		OGRFeature *poFeature;
 		poFeature = OGRFeature::CreateFeature(poLayer->GetLayerDefn());
@@ -53,7 +53,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 			poFeature->SetField(tableNames[j].data(), tableValues[i][j].data());
 			std::cout << tableValues[i][j].data() << std::endl;
 		}
-		//ÉèÖÃµãµÄ×ø±ê
+		//è®¾ç½®ç‚¹çš„åæ ‡
 		OGRPoint point;
 	    point.setX(polygon2DPointList.at(i)[0]);
 	    point.setY(polygon2DPointList.at(i)[1]);
@@ -91,8 +91,8 @@ int autoTracktool::createShpFileTest()
 
 	gdalDriver = (OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName));
 
-	//¸ù¾ÝÎÄ¼þÃû´´½¨Êä³öÊ¸Á¿ÎÄ¼þ
-	GDALDataset* poDstDS = gdalDriver->Create("E:\\test\\polygon.shp", 0, 0, 0, GDT_Unknown, NULL); //´´½¨shpÎÄ¼þ
+	//æ ¹æ®æ–‡ä»¶ååˆ›å»ºè¾“å‡ºçŸ¢é‡æ–‡ä»¶
+	GDALDataset* poDstDS = gdalDriver->Create("E:\\test\\polygon.shp", 0, 0, 0, GDT_Unknown, NULL); //åˆ›å»ºshpæ–‡ä»¶
 	if (poDstDS == NULL)
 	{
 		printf("Creation of output file failed.\n");
@@ -130,7 +130,7 @@ int autoTracktool::createShpFileTest()
 	ring.addPoint(0, 30);
 	ring.addPoint(30, 30);
 	ring.addPoint(30, 0);
-	ring.closeRings();//Ê×Î²µãÖØºÏÐÎ³É±ÕºÏ»·  
+	ring.closeRings();//é¦–å°¾ç‚¹é‡åˆå½¢æˆé—­åˆçŽ¯  
 	OGRPolygon polygon;
 	polygon.addRing(&ring);
 	poFeature->SetGeometry(&polygon);

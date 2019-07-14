@@ -16,7 +16,7 @@
 
 NtAccessManager::NtAccessManager()
 {
-	//¼ÓÔØÊı¾İ¿âÇı¶¯ÎÄ¼ş
+	//åŠ è½½æ•°æ®åº“é©±åŠ¨æ–‡ä»¶
 	QString path = QDir::currentPath();
 	path = path.append("/Release");
 	std::cout << path.toStdString() << std::endl;
@@ -25,34 +25,34 @@ NtAccessManager::NtAccessManager()
 	
 }
 
-//´´½¨Êı¾İ¿âÁ¬½Ó
+//åˆ›å»ºæ•°æ®åº“è¿æ¥
 void NtAccessManager::connectDB()
 {
-	//»ñÈ¡ÊÇ·ñ´æÔÚÓĞÊı¾İ¿âÁ¬½Ó
+	//è·å–æ˜¯å¦å­˜åœ¨æœ‰æ•°æ®åº“è¿æ¥
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
-	if (dbconn.isValid())//´æÔÚÁ¬½ÓÖ±½ÓÍË³ö
+	if (dbconn.isValid())//å­˜åœ¨è¿æ¥ç›´æ¥é€€å‡º
 	{
 		return;
 	}
 	
-	//´´½¨Ò»Á¬½ÓÃûÎª"test"µÄÊı¾İ¿âÁ¬½Ó
+	//åˆ›å»ºä¸€è¿æ¥åä¸º"test"çš„æ•°æ®åº“è¿æ¥
     dbconn = QSqlDatabase::addDatabase("QODBC", "test");
 	std::cout << dbconn.driverName().toStdString() << std::endl;
-	QString sDbNm = QString::fromLocal8Bit("E:/mdbºÍdxf/¿µ¶¨×éCZ-SK-06.mdb");
-	QString dsn = QString("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; FIL={MS Access};DBQ=%1;").arg(sDbNm);//Á¬½Ó×Ö·û´®
+	QString sDbNm = QString::fromLocal8Bit("E:/mdbå’Œdxf/åº·å®šç»„CZ-SK-06.mdb");
+	QString dsn = QString("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; FIL={MS Access};DBQ=%1;").arg(sDbNm);//è¿æ¥å­—ç¬¦ä¸²
 	dbconn.setDatabaseName(dsn);
-	dbconn.setUserName("");//ÉèÖÃµÇÂ½Êı¾İ¿âµÄÓÃ»§Ãû
-	dbconn.setPassword("");//ÉèÖÃÃÜÂë
+	dbconn.setUserName("");//è®¾ç½®ç™»é™†æ•°æ®åº“çš„ç”¨æˆ·å
+	dbconn.setPassword("");//è®¾ç½®å¯†ç 
 	if (!dbconn.open()) {
-		std::cout << "mdbÁ´½ÓÊ§°Ü!" << std::endl;
+		std::cout << "mdbé“¾æ¥å¤±è´¥!" << std::endl;
 	}
 }
-//²éÑ¯mdb×Ö¶ÎÃû×Ö
+//æŸ¥è¯¢mdbå­—æ®µåå­—
 std::vector<std::string> NtAccessManager::queryTableName()
 {
 	std::vector<std::string> tableNames;
-	//»ñÈ¡Á¬½ÓÃû¿â"test"µÄÁ¬½Ó
+	//è·å–è¿æ¥ååº“"test"çš„è¿æ¥
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
 	QSqlQuery sql_query(dbconn);
@@ -73,17 +73,17 @@ std::vector<std::string> NtAccessManager::queryTableName()
 	return tableNames;
 }
 
-//²éÑ¯Êı¾İ¿â¾­Î³¶È
+//æŸ¥è¯¢æ•°æ®åº“ç»çº¬åº¦
 std::vector<std::vector<double>> NtAccessManager::readLatLong()
 {
 	std::vector<std::vector<double>> latLongs;
-	//»ñÈ¡Á¬½ÓÃû¿â"test"µÄÁ¬½Ó
+	//è·å–è¿æ¥ååº“"test"çš„è¿æ¥
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
 	QSqlQuery sql_query(dbconn);
 	sql_query.exec(QObject::tr("SELECT N,E FROM ZKFC"));
 
-	//¾­Î³¶ÈÒÀ´Î´æÈëVector
+	//ç»çº¬åº¦ä¾æ¬¡å­˜å…¥Vector
 	while (sql_query.next())
 	{
 		std::vector<double> temp;
@@ -94,17 +94,17 @@ std::vector<std::vector<double>> NtAccessManager::readLatLong()
 	return latLongs;
 }
 
-//²éÑ¯Êı¾İ¿âËùÓĞ×Ö¶ÎÖµ
+//æŸ¥è¯¢æ•°æ®åº“æ‰€æœ‰å­—æ®µå€¼
 std::vector<std::vector<std::string>> NtAccessManager::readTableValue()
 {
 	std::vector<std::vector<std::string>> tableValues;
-	//»ñÈ¡Á¬½ÓÃû¿â"test"µÄÁ¬½Ó
+	//è·å–è¿æ¥ååº“"test"çš„è¿æ¥
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
 
 	QSqlQuery sql_query(dbconn);
 	sql_query.exec(QObject::tr("SELECT * FROM ZKFC"));
 
-	//¾­Î³¶ÈÒÀ´Î´æÈëVector
+	//ç»çº¬åº¦ä¾æ¬¡å­˜å…¥Vector
 	while (sql_query.next())
 	{
 		std::vector<std::string> temp;
@@ -112,7 +112,7 @@ std::vector<std::vector<std::string>> NtAccessManager::readTableValue()
 			std::string value = sql_query.value(i).toString().toLocal8Bit();
 			temp.push_back(value);
 		}
-		//¼ÓÈëPath
+		//åŠ å…¥Path
 		//temp.push_back("E:/ZK");
 		tableValues.push_back(temp);
 	}	

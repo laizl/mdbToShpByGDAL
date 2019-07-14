@@ -10,29 +10,29 @@ class NtAccessManager
 public:
 	NtAccessManager();
 	/**
-	* »ñÈ¡Á´½Ó
+	* è·å–é“¾æ¥
 	*/
 	void connectDB();
 	/**
-	* ²éÑ¯Êı¾İ¿â±íÃû
+	* æŸ¥è¯¢æ•°æ®åº“è¡¨å
 	*/
 	std::vector<std::string> queryTableName();
 
 	/**
-	* ²éÑ¯Êı¾İ¿â¾­Î³¶ÈÖµ
+	* æŸ¥è¯¢æ•°æ®åº“ç»çº¬åº¦å€¼
 	*/
 	std::vector<std::vector<double>> readLatLong();
 	/**
-	* ²éÑ¯Êı¾İ¿â×Ö¶ÎµÄÖµ
+	* æŸ¥è¯¢æ•°æ®åº“å­—æ®µçš„å€¼
 	*/
 	std::vector<std::vector<std::string>> readTableValue();
 	/**
-	* ¹Ø±ÕÊı¾İ¿â
+	* å…³é—­æ•°æ®åº“
 	*/
 	void closeConnection();
 
 private:
-	int tableLength = 0; //±í³¤
+	int tableLength = 0; //è¡¨é•¿
 };
 
 #endif // NTACCESSMANAGER_H
