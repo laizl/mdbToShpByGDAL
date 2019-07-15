@@ -6,28 +6,30 @@
 int main(int argc, char *argv[]) {
 	
 	/*if (argc <= 3) {
-		std::cout << "²ÎÊý²»È«" << std::endl;
+		std::cout << "å‚æ•°ä¸å…¨" << std::endl;
 		return;
 	}*/
 	std::string  path = "E:/ZK";
 	//std::string  Filepath = argv[3];
-	//´ÓÊý¾Ý¿âÖÐ»ñÈ¡Êý¾Ý
+	std::string inputFileName = argv[1];
+	std::string outputFileName = argv[2];
+	//ä»Žæ•°æ®åº“ä¸­èŽ·å–æ•°æ®
 	NtAccessManager *ntAccessManager = new NtAccessManager();
-	ntAccessManager->connectDB();
+	ntAccessManager->connectDB(inputFileName);
 	std::vector<std::string> tableNameS = ntAccessManager->queryTableName();
 	std::vector<std::vector<double>> latLongS = ntAccessManager->readLatLong();
 	std::vector<std::vector<std::string>> tableValues = ntAccessManager->readTableValue();
 	
-	std::vector<std::string> temp;
-	for (int i = 0; i < tableNameS.size(); i++) {
-		temp.push_back(path);
-	}
-	tableValues.push_back(temp);
-	//½«Êý¾ÝÐ´ÈëshpÎÄ¼þ
+	// std::vector<std::string> temp;
+	// for (int i = 0; i < tableNameS.size(); i++) {
+	// 	temp.push_back(path);
+	// }
+	// tableValues.push_back(temp);
+	//å°†æ•°æ®å†™å…¥shpæ–‡ä»¶
 	//std::cout << tableNameS.size() << std::endl;
 	autoTracktool *aTool = new autoTracktool();
 	aTool->createShpFileTest();
-	aTool->exportPolygonToShpFile(tableNameS,"Filepath", latLongS,tableValues);
+	aTool->exportPolygonToShpFile(tableNameS,outputFileName, latLongS,tableValues);
 	
 	return 0;
 }

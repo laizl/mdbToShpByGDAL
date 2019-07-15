@@ -1,3 +1,3 @@
-关于mdbToShp
+鍏充簬mdbToShp
 
-    使用gdal库和qt5，将数据从mdb中读取出来后封装进入shp
+    浣跨敤gdal搴撳拰qt5锛屽皢鏁版嵁浠巑db涓鍙栧嚭鏉ュ悗灏佽杩涘叆shp

@@ -28,7 +28,7 @@ NtAccessManager::NtAccessManager()
 }
 
 //创建数据库连接
-void NtAccessManager::connectDB()
+void NtAccessManager::connectDB(std::string mdbFileName)
 {
 	//获取是否存在有数据库连接
 	QSqlDatabase dbconn = QSqlDatabase::database("test", false);
@@ -41,7 +41,8 @@ void NtAccessManager::connectDB()
 	//创建一连接名为"test"的数据库连接
     dbconn = QSqlDatabase::addDatabase("QODBC", "test");
 	std::cout << dbconn.driverName().toStdString() << std::endl;
-	QString sDbNm = QString::fromLocal8Bit("E:/mdb和dxf/康定组CZ-SK-06.mdb");
+	//QString sDbNm = QString::fromLocal8Bit("E:/mdb和dxf/康定组CZ-SK-06.mdb");
+	QString sDbNm = QString::fromLocal8Bit(mdbFileName);
 	QString dsn = QString("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; FIL={MS Access};DBQ=%1;").arg(sDbNm);//连接字符串
 	dbconn.setDatabaseName(dsn);
 	dbconn.setUserName("");//设置登陆数据库的用户名
