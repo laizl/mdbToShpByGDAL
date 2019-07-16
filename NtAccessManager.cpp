@@ -82,7 +82,7 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 			 for  (j = 0; j < table->num_cols; j++) 
 			   {
 			 fprintf (stdout, "\t");
-			 col = g_ptr_array_index (table->columns, j);
+			 col = (MdbColumn *)g_ptr_array_index (table->columns, j);
 			 if  (quote_text && 
 				  (col->col_type == MDB_TEXT ||
 				   col->col_type == MDB_MEMO)) 

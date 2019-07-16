@@ -33,7 +33,7 @@ public:
 	//void closeConnection();
 
 private:
-	int tableLength = 0; //表长
+	//int tableLength = 0; //表长
 };
 
 #endif // NTACCESSMANAGER_H
