@@ -12,7 +12,7 @@ public:
 	/**
 	* 获取链接
 	*/
-	void connectDB();
+	void connectDB(std::string mdbFileName);
 	/**
 	* 查询数据库表名
 	*/

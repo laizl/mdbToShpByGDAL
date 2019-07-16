@@ -42,7 +42,7 @@ void NtAccessManager::connectDB(std::string mdbFileName)
     dbconn = QSqlDatabase::addDatabase("QODBC", "test");
 	std::cout << dbconn.driverName().toStdString() << std::endl;
 	//QString sDbNm = QString::fromLocal8Bit("E:/mdb和dxf/康定组CZ-SK-06.mdb");
-	QString sDbNm = QString::fromLocal8Bit(mdbFileName);
+	QString sDbNm = QString::fromLocal8Bit(mdbFileName.c_str());
 	QString dsn = QString("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)}; FIL={MS Access};DBQ=%1;").arg(sDbNm);//连接字符串
 	dbconn.setDatabaseName(dsn);
 	dbconn.setUserName("");//设置登陆数据库的用户名

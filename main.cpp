@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	//将数据写入shp文件
 	//std::cout << tableNameS.size() << std::endl;
 	autoTracktool *aTool = new autoTracktool();
-	aTool->createShpFileTest();
+	// aTool->createShpFileTest();
 	aTool->exportPolygonToShpFile(tableNameS,outputFileName, latLongS,tableValues);
 	
 	return 0;
