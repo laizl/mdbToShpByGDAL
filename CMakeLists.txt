@@ -16,69 +16,7 @@ ENDIF(COMMAND CMAKE_POLICY)
 
 FIND_PACKAGE(GDAL)
 
-# To select a specific version of QT define DESIRED_QT_VERSION
-# via cmake -DDESIRED_QT_VERSION=5
-# QUIET option disables messages if the package cannot be found.
-
-IF  (DESIRED_QT_VERSION)
-    IF  (DESIRED_QT_VERSION MATCHES 5)
-        FIND_PACKAGE(Qt5 COMPONENTS Widgets REQUIRED)
-    ELSEIF (DESIRED_QT_VERSION MATCHES 4)
-        FIND_PACKAGE(Qt4 REQUIRED)
-    ENDIF()
-
-ELSE()
-
-    FIND_PACKAGE(Qt5 COMPONENTS Widgets REQUIRED)
-
-    IF ( Qt5Widgets_FOUND )
-        # CMake 2.8.8 or greater required
-        IF(NOT VALID_BUILDER_VERSION)
-            MESSAGE(
-            SEND_ERROR
-            "Qt5 requires CMake version 2.8.8 or greater!\n"
-            "Update CMake or set DESIRED_QT_VERSION to less than 5
-            or disable OSG_USE_QT."
-            )
-        ENDIF( )
-    ENDIF( )
-
-    IF ( NOT Qt5Widgets_FOUND )
-        FIND_PACKAGE(Qt4 REQUIRED)
-    ENDIF()
-ENDIF()
-
-#If we have found Qt5, let's try to top off by getting the webkit as well
-IF ( Qt5Widgets_FOUND )
-message(STATUS "wfc qt5-003")
-    FIND_PACKAGE(Qt5OpenGL REQUIRED)
-    FIND_PACKAGE(Qt5WebKitWidgets QUIET)
-
-    IF(COMMAND cmake_policy)
-        IF(${CMAKE_MAJOR_VERSION} GREATER 2)
-            # Qt5 qt5_use_modules usage was causing "Policy CMP0043 is not set: Ignore COMPILE_DEFINITIONS_<Config> properties." warnings
-            cmake_policy(SET CMP0043 NEW)
-        ENDIF()
-    ENDIF()
-ENDIF()
-
-IF(Qt5Widgets_FOUND)
-  message(STATUS "Qt: Using version 5")
-  FIND_PACKAGE(Qt5Core QUIET)
-  FIND_PACKAGE(Qt5Gui QUIET)
-  FIND_PACKAGE(Qt5Widgets QUIET)
-  FIND_PACKAGE(Qt5Sql QUIET)
-        
-  IF ( Qt5Core_FOUND AND Qt5Widgets_FOUND AND Qt5Gui_FOUND AND Qt5Sql_FOUND)
-  message(STATUS "wfc qt5-002")  
-  SET(QT_INCLUDES ${Qt5Widgets_INCLUDE_DIRS})
-  ENDIF ()
-ELSEIF(QT4_FOUND)
-  message(STATUS "Qt: Using version 4")
-  INCLUDE(${QT_USE_FILE})
-  #SET(QT_INCLUDES ${QT_INCLUDES} ${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${QT_QTGUI_INCLUDE_DIR}${QT_QTOPENGL_INCLUDE_DIR} )
-  SET(QT_ALL_LIBRARIES ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTWEBKIT_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY})
-ENDIF ()
+FIND_PACKAGE(MDB)
 
 # Expose CMAKE_INCLUDE_PATH and CMAKE_LIBARY_PATH to the GUI so users
 # may set these values without needing to manipulate the environment.
@@ -150,72 +88,20 @@ SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on w
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(CMAKE_AUTOMOC ON)
 #set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
+#set(CMAKE_AUTORCC ON)
 
-
-INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${GDAL_INCLUDE_DIR})
-
-
-SET(UI_FILES
-    #autotracktool.ui
-)
-
-SET(MOC_HDRS
-    autotracktool.h
-)
-
-set(LIB_QT_RCS
-    #autotracktool.qrc
-)
-
-IF(Qt5Widgets_FOUND)
-    QT5_ADD_RESOURCES( LIB_RC_SRCS ${LIB_QT_RCS} )
-    QT5_WRAP_UI( UI_HDRS ${UI_FILES} )
-    QT5_WRAP_CPP( UI_SRCS ${UI_HDRS} )
-    SET(MOC_SRCS)
-    FOREACH( MOC_HDR ${MOC_HDRS} )
-        GET_FILENAME_COMPONENT( MOC_HDR_ABS ${MOC_HDR} ABSOLUTE )
-        QT5_WRAP_CPP( MOC_SRC ${MOC_HDR} OPTIONS "-f${MOC_HDR_ABS}" )
-        LIST( APPEND MOC_SRCS ${MOC_SRC} )
-    ENDFOREACH()
-ELSE()
-    INCLUDE( ${QT_USE_FILE} )
-    QT4_ADD_RESOURCES( LIB_RC_SRCS ${LIB_QT_RCS} )
-    QT4_WRAP_UI( UI_HDRS ${UI_FILES} )
-    QT4_WRAP_CPP( UI_SRCS ${UI_HDRS} )
-    QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} OPTIONS "-f" )
-ENDIF()
+INCLUDE_DIRECTORIES(${MDB_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${GDAL_INCLUDE_DIR} ${GLIB_INCLUDE_DIR} ${GLIB_INCLUDE_64_DIR})
 
 SET(TARGET_H
-    ${UI_HDRS}
-    ${LIB_QT_RCS}
     autotracktool.h
-	NtAccessManager.h
+    NtAccessManager.h
 )
 
 SET(TARGET_SRC
-    ${UI_SRCS}
-    ${MOC_SRCS}
-    #Resources/image/autotracktool.rc
     autotracktool.cpp
 	NtAccessManager.cpp
     main.cpp
 )
-
-
-IF(Qt5Widgets_FOUND)
-    SET(TARGET_ADDED_LIBRARIES
-        Qt5::Core
-        Qt5::Widgets
-        Qt5::Gui
-		Qt5::Sql
-    )
-ELSE(Qt5Widgets_FOUND)
-    SET(TARGET_ADDED_LIBRARIES
-        ${QT_QTCORE_LIBRARY}
-        ${QT_QTGUI_LIBRARY}
-    )
-ENDIF(Qt5Widgets_FOUND)
 
 INCLUDE(OsgEarthMacroUtils)
 
@@ -228,7 +114,7 @@ ENDIF(Qt5Widgets_FOUND)
 
 OPTION(NRL_STATIC_LIBRARIES "Link osgEarth against static GDAL and cURL, including static OpenSSL, Proj4, JPEG, PNG, and TIFF." OFF)
 if(NOT NRL_STATIC_LIBRARIES)
-  LINK_WITH_VARIABLES(autoTracktool GDAL_LIBRARY)
+  LINK_WITH_VARIABLES(autoTracktool GDAL_LIBRARY MDB_LIBRARY)
 else(NOT NRL_STATIC_LIBRARIES)
   LINK_WITH_VARIABLES(autoTracktool)
 endif(NOT NRL_STATIC_LIBRARIES)

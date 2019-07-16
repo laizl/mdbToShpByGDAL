@@ -1,10 +1,11 @@
-#include "autotracktool.h"
 #include <ogr_spatialref.h>
+
+#include "autotracktool.h"
 
 autoTracktool::autoTracktool() {
 
 }
-int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, std::string fileName, std::vector<std::vector<double>> polygon2DPointList, std::vector<std::vector<std::string>> tableValues)
+int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, std::string fileName, std::vector<std::vector<double> > polygon2DPointList, std::vector<std::vector<std::string> > tableValues)
 {
 	const char *pszDriverName = "ESRI Shapefile";
 	GDALDriver *gdalDriver;
