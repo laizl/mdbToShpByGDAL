@@ -13,7 +13,7 @@
 //#include <QVariant>
 
 //#include "qt_windows.h"
-
+#include <math.h>
 #include <mdbtools.h>
 
 
@@ -25,8 +25,11 @@
 #define is_quote_type(x) (x==MDB_TEXT || x==MDB_OLE || x==MDB_MEMO || x==MDB_DATETIME || x==MDB_BINARY || x==MDB_REPID)
 #define is_binary_type(x) (x==MDB_OLE || x==MDB_BINARY || x==MDB_REPID)
 
-NtAccessManager::NtAccessManager()
+NtAccessManager::NtAccessManager(std::string tableName,std::string latFieldString, std::string longFieldString)
 {
+	_tableName = tableName;
+	_latFieldString = latFieldString;
+	_longFieldString = longFieldString;
 	//加载数据库驱动文件
 	//QString path = QDir::currentPath();
 	//path = path.append("/Release");
@@ -50,12 +53,16 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 	char quote_text = 1;
 	int count = 0;
 	int started;
+
+	int latIndex = -1;
+	int longIndex = -1;
+
 	mdb = mdb_open (mdbFileName.c_str(), MDB_NOFLAGS);
 	if (!mdb)
 	{
 		exit(1);
 	}
-	table = mdb_read_table_by_name (mdb, "ZKFC", MDB_TABLE);
+	table = mdb_read_table_by_name (mdb, (gchar* )_tableName.c_str(), MDB_TABLE);
 	if (table)
 	{
 		mdb_read_columns (table);
@@ -71,63 +78,40 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 			mdb_bind_column(table, j+1, bound_values[j], &bound_lens[j]);
 		}
 
-		for (i=0; i<table->num_cols; i++) {
-			col=g_ptr_array_index(table->columns,i);
+		for (int i=0; i<table->num_cols; i++) {
+			col = (MdbColumn *)g_ptr_array_index(table->columns,i);
 			tempFieldName = col->name;
 			_fieldNames.push_back(tempFieldName);
-			//if (i)
-			//	fputs(delimiter, outfile);
-			//fputs(col->name, outfile);
+			if(tempFieldName == _latFieldString){
+				latIndex = i;
+			}
+			if(tempFieldName == _longFieldString){
+				longIndex = i;
+			}
 		}
-		//fputs(row_delimiter, outfile);
-
-		// fprintf (stdout, "/******************************************************************/\n");
-		// fprintf (stdout, "/* THIS IS AN AUTOMATICALLY GENERATED FILE.  DO NOT EDIT IT!!!!!! */\n");
-		// fprintf (stdout, "/******************************************************************/\n");
-		// fprintf (stdout, "\n");
-		// fprintf (stdout, "#include <stdio.h>\n");
-		// fprintf (stdout, "#include \"types.h\"\n");
-		// fprintf (stdout, "#include \"dump.h\"\n");
-		// fprintf (stdout, "\n");
-		// fprintf (stdout, "const %s %s_array [] = {\n", "ZKFC", "ZKFC");
-
+	
 		count = 0;
 		started = 0;
 		while (mdb_fetch_row (table)) 
 		{
-			if (started != 0)
-			{
-			fprintf (stdout, ",\n");
-			}
-			started = 1;
-			fprintf (stdout, "{\t\t\t\t/* %6d */\n\t", count);
+			std::vector<double> tempLatLongList;
+			std::vector<std::string> temList;
+			//fprintf (stdout, "{\t\t\t\t/* %6d */\n\t", count);
 			for  (j = 0; j < table->num_cols; j++) 
 			{
-				fprintf (stdout, "\t");
-				col = (MdbColumn *)g_ptr_array_index (table->columns, j);
-				if  (quote_text && 
-					(col->col_type == MDB_TEXT ||
-					col->col_type == MDB_MEMO)) 
-				{
-					fprintf (stdout, "\"%s\"", bound_values [j]);
-				} 
-				else 
-				{
-					fprintf (stdout, "%s", bound_values [j]);
+				tempFieldName = bound_values [j];
+				if(j==latIndex){
+					tempLatLongList.push_back(atof(tempFieldName.c_str()));
 				}
-				if (j != table->num_cols - 1)
-				{
-					fprintf (stdout, "%s\n", delimiter);
+				if(j==longIndex){
+					tempLatLongList.push_back(atof(tempFieldName.c_str()));
 				}
-				else
-				{
-					fprintf (stdout, "\n");
-				}
+				temList.push_back(tempFieldName);
 			}
-			fprintf (stdout, "}");
+			_latLongs.push_back(tempLatLongList);
+			_dataValue.push_back(temList);
 			count++;
 		}
-		fprintf (stdout, "\n};\n\n");
 
 		for(j = 0; j < table->num_cols; j++) 
 		{
@@ -137,5 +121,4 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 	}
 	 
 	mdb_close (mdb);
-	fprintf (stdout, "const int %s_array_length = %d;\n", "ZKFC", count);
 }
