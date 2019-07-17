@@ -34,6 +34,8 @@ public:
 	//void closeConnection();
 
 	std::vector<std::string> _fieldNames;
+	std::vector<std::vector<std::string> > _dataValue;
+	std::vector<std::vector<double> > _latLongS;
 private:
 	int tableLength = 0; //表长
 };

@@ -19,6 +19,11 @@
 
 #include "NtAccessManager.h"
 
+#undef MDB_BIND_SIZE
+#define MDB_BIND_SIZE 200000
+
+#define is_quote_type(x) (x==MDB_TEXT || x==MDB_OLE || x==MDB_MEMO || x==MDB_DATETIME || x==MDB_BINARY || x==MDB_REPID)
+#define is_binary_type(x) (x==MDB_OLE || x==MDB_BINARY || x==MDB_REPID)
 
 NtAccessManager::NtAccessManager()
 {
@@ -32,12 +37,15 @@ NtAccessManager::NtAccessManager()
 }
 
 void NtAccessManager::testReadMdb(std::string mdbFileName){
+	std::string tempFieldName;
 	unsigned int j;
 	MdbHandle *mdb;
 	MdbTableDef *table;
 	MdbColumn *col;
 	/* doesn't handle tables > 256 columns.  Can that happen? */
-	char *bound_values [256]; 
+	//char *bound_values [256];
+	char **bound_values;
+	int  *bound_lens; 
 	char delimiter [] = ", ";
 	char quote_text = 1;
 	int count = 0;
@@ -52,23 +60,36 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 	{
 		mdb_read_columns (table);
 		mdb_rewind_table (table);
-		 
+		
+		bound_values = (char **) g_malloc(table->num_cols * sizeof(char *));
+		bound_lens = (int *) g_malloc(table->num_cols * sizeof(int));
 		for (j = 0; j < table->num_cols; j++) 
 		{
 			bound_values [j] =  (char *) g_malloc (MDB_BIND_SIZE);
 			bound_values [j] [0] = '\0';
-			mdb_bind_column (table, j+1, bound_values[j], NULL);
+			// mdb_bind_column (table, j+1, bound_values[j], NULL);
+			mdb_bind_column(table, j+1, bound_values[j], &bound_lens[j]);
 		}
 
-		fprintf (stdout, "/******************************************************************/\n");
-		fprintf (stdout, "/* THIS IS AN AUTOMATICALLY GENERATED FILE.  DO NOT EDIT IT!!!!!! */\n");
-		fprintf (stdout, "/******************************************************************/\n");
-		fprintf (stdout, "\n");
-		fprintf (stdout, "#include <stdio.h>\n");
-		fprintf (stdout, "#include \"types.h\"\n");
-		fprintf (stdout, "#include \"dump.h\"\n");
-		fprintf (stdout, "\n");
-		fprintf (stdout, "const %s %s_array [] = {\n", "ZKFC", "ZKFC");
+		for (i=0; i<table->num_cols; i++) {
+			col=g_ptr_array_index(table->columns,i);
+			tempFieldName = col->name;
+			_fieldNames.push_back(tempFieldName);
+			//if (i)
+			//	fputs(delimiter, outfile);
+			//fputs(col->name, outfile);
+		}
+		//fputs(row_delimiter, outfile);
+
+		// fprintf (stdout, "/******************************************************************/\n");
+		// fprintf (stdout, "/* THIS IS AN AUTOMATICALLY GENERATED FILE.  DO NOT EDIT IT!!!!!! */\n");
+		// fprintf (stdout, "/******************************************************************/\n");
+		// fprintf (stdout, "\n");
+		// fprintf (stdout, "#include <stdio.h>\n");
+		// fprintf (stdout, "#include \"types.h\"\n");
+		// fprintf (stdout, "#include \"dump.h\"\n");
+		// fprintf (stdout, "\n");
+		// fprintf (stdout, "const %s %s_array [] = {\n", "ZKFC", "ZKFC");
 
 		count = 0;
 		started = 0;
