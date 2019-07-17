@@ -15,10 +15,10 @@ public:
 	*/
 	//void connectDB(std::string mdbFileName);
 	/**
-	* 查询数据库表名
+	* 获取字段列表名
 	*/
 	//std::vector<std::string> queryTableName();
-
+	std::vector<std::string> getFieldNames();
 	/**
 	* 查询数据库经纬度值
 	*/
@@ -26,12 +26,14 @@ public:
 	/**
 	* 查询数据库字段的值
 	*/
+	
 	//std::vector<std::vector<std::string>> readTableValue();
 	/**
 	* 关闭数据库
 	*/
 	//void closeConnection();
 
+	std::vector<std::string> _fieldNames;
 private:
 	int tableLength = 0; //表长
 };

@@ -16,7 +16,8 @@ int main(int argc, char *argv[]) {
 	//从数据库中获取数据
 	NtAccessManager *ntAccessManager = new NtAccessManager();
 	ntAccessManager->testReadMdb(inputFileName);
-	//std::vector<std::string> tableNameS = ntAccessManager->queryTableName();
+
+	std::vector<std::string> fieldNames = ntAccessManager->getFieldName();
 	//std::vector<std::vector<double>> latLongS = ntAccessManager->readLatLong();
 	//std::vector<std::vector<std::string>> tableValues = ntAccessManager->readTableValue();
 	
@@ -27,9 +28,9 @@ int main(int argc, char *argv[]) {
 	// tableValues.push_back(temp);
 	//将数据写入shp文件
 	//std::cout << tableNameS.size() << std::endl;
-	//autoTracktool *aTool = new autoTracktool();
+	autoTracktool *aTool = new autoTracktool();
 	// aTool->createShpFileTest();
-	//aTool->exportPolygonToShpFile(tableNameS,outputFileName, latLongS,tableValues);
+	aTool->exportPolygonToShpFile(tableNameS,outputFileName, latLongS,tableValues);
 	
 	return 0;
 }
