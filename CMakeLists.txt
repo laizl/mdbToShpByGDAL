@@ -1,4 +1,4 @@
-﻿PROJECT(autoTracktool)
+﻿PROJECT(mdb2shp)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix for Debug mode, usually d on windows")
@@ -107,14 +107,14 @@ INCLUDE(OsgEarthMacroUtils)
 
 #### end var setup  ###
 IF(Qt5Widgets_FOUND)
-SETUP_APPLICATION(autoTracktool)
+SETUP_APPLICATION(mdb2shp)
 ELSE(Qt5Widgets_FOUND)
-SETUP_APPLICATION(autoTracktool)
+SETUP_APPLICATION(mdb2shp)
 ENDIF(Qt5Widgets_FOUND)
 
 OPTION(NRL_STATIC_LIBRARIES "Link osgEarth against static GDAL and cURL, including static OpenSSL, Proj4, JPEG, PNG, and TIFF." OFF)
 if(NOT NRL_STATIC_LIBRARIES)
-  LINK_WITH_VARIABLES(autoTracktool GDAL_LIBRARY MDB_LIBRARY)
+  LINK_WITH_VARIABLES(mdb2shp GDAL_LIBRARY MDB_LIBRARY GLIB_LIBRARY)
 else(NOT NRL_STATIC_LIBRARIES)
-  LINK_WITH_VARIABLES(autoTracktool)
+  LINK_WITH_VARIABLES(mdb2shp)
 endif(NOT NRL_STATIC_LIBRARIES)

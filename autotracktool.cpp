@@ -11,6 +11,11 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	GDALDriver *gdalDriver;
 
 	OGRRegisterAll();
+
+	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
+	//CPLSetConfigOption("SHAPE_ENCODING","");
+	CPLSetConfigOption("SHAPE_ENCODING","CP936");
+
 	gdalDriver = (OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName));
 	//create shapefile
 	GDALDataset* poDstDS = gdalDriver->Create(fileName.c_str(), 0, 0, 0, GDT_Unknown, NULL);
@@ -29,7 +34,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 
 	OGRLayer *poLayer;
 	//poLayer = poDstDS->CreateLayer("polygon_out", NULL, wkbPolygon, NULL);
-	poLayer = poDstDS->CreateLayer("polygon_out", oSRS, wkbPoint, NULL);
+	poLayer = poDstDS->CreateLayer("point_out", oSRS, wkbPoint, NULL);
 
 
 	if (poLayer == NULL)
@@ -39,11 +44,14 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	}
 	//将属性字段进行填写
 	for (int i = 0; i < tableNames.size(); i++) {
-		printf("%s", tableNames[i].data());
-		OGRFieldDefn Field((char*)tableNames[i].data(), OFTString);
+		//printf("%s\n", tableNames[i].c_str());
+		//std::cout<<tableNames.at(i)<<std::endl;
+		//OGRFieldDefn Field((char*)tableNames[i].data(), OFTString);
+		OGRFieldDefn Field(tableNames.at(i).c_str(), OFTString);
 		Field.SetWidth(128);
 		poLayer->CreateField(&Field);
 	}
+	//return 0;
 	OGRPolygon ogrPolygon;
 	//创建一个OGRPoint对象
 	for (int i = 0; i < polygon2DPointList.size(); i++) {
@@ -52,7 +60,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		for (int j = 0; j < tableNames.size(); j++)
 		{
 			poFeature->SetField(tableNames[j].data(), tableValues[i][j].data());
-			std::cout << tableValues[i][j].data() << std::endl;
+			//std::cout << tableValues[i][j].data() << std::endl;
 		}
 		//设置点的坐标
 		OGRPoint point;
