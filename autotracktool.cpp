@@ -1,4 +1,9 @@
 #include <ogr_spatialref.h>
+#include <ogrsf_frmts.h>
+#include <gdal.h>
+#include <gdal_priv.h>
+#include <cpl_string.h>
+
 
 #include "autotracktool.h"
 
@@ -11,6 +16,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	GDALDriver *gdalDriver;
 
 	OGRRegisterAll();
+	CPLSetConfigOption("GDAL_DATA", "./gdaldata");
 
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
 	//CPLSetConfigOption("SHAPE_ENCODING","");
@@ -66,10 +72,35 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 			//std::cout << tableValues[i][j].data() << std::endl;
 		}
 		//设置点的坐标
+		if( polygon2DPointList.at(i)[0]+polygon2DPointList.at(i)[1] > 720 )
+		{
+			OGRSpatialReference spatialReference;
+			spatialReference.importFromEPSG(4610);//XIAN80
+			spatialReference.SetTM(0, 114, 1.0, 38500000, 0);
+
+			OGRSpatialReference* pLonLat = spatialReference.CloneGeogCS();
+			//OGRCoordinateTransformation* LonLat2XY = OGRCreateCoordinateTransformation(pLonLat, &spatialReference);
+			OGRCoordinateTransformation* LonLat2XY = OGRCreateCoordinateTransformation(&spatialReference, pLonLat);
+
+			double x = polygon2DPointList.at(i)[0];
+			double y = polygon2DPointList.at(i)[1];
+			// double cart_x = 38465252.023887850;
+			// double cart_y = 4296379.277210157;
+			
+			//printf("平面坐标:%.9lf\t%.9lf\n", x, y);
+			if (!LonLat2XY->Transform(1, &x, &y))
+			{
+				return 1;
+			}
+			polygon2DPointList.at(i)[0] = x;
+			polygon2DPointList.at(i)[1] = y;
+			OGRCoordinateTransformation::DestroyCT(LonLat2XY);
+			LonLat2XY = NULL;
+		}
 		OGRPoint point;
-	    	point.setX(polygon2DPointList.at(i)[0]);
-	    	point.setY(polygon2DPointList.at(i)[1]);
-	    	poFeature->SetGeometry(&point);
+		point.setX(polygon2DPointList.at(i)[0]);
+		point.setY(polygon2DPointList.at(i)[1]);
+		poFeature->SetGeometry(&point);
 
 		if (poLayer->CreateFeature(poFeature) != OGRERR_NONE)
 	    	{
