@@ -89,7 +89,7 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 				longIndex = i;
 			}
 		}
-	
+
 		count = 0;
 		started = 0;
 		while (mdb_fetch_row (table)) 
@@ -112,13 +112,11 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 			_dataValue.push_back(temList);
 			count++;
 		}
-
 		for(j = 0; j < table->num_cols; j++) 
 		{
 			g_free (bound_values [j]);
 		}
 		mdb_free_tabledef(table);
 	}
-	 
 	mdb_close (mdb);
 }

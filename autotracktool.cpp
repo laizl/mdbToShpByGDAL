@@ -36,7 +36,6 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	//poLayer = poDstDS->CreateLayer("polygon_out", NULL, wkbPolygon, NULL);
 	poLayer = poDstDS->CreateLayer("point_out", oSRS, wkbPoint, NULL);
 
-
 	if (poLayer == NULL)
 	{
 		printf("Layer creation failed.\n");
@@ -54,29 +53,31 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	//return 0;
 	OGRPolygon ogrPolygon;
 	//创建一个OGRPoint对象
+	std::cout <<"polygon2DPointList:" <<polygon2DPointList.size() << std::endl;
 	for (int i = 0; i < polygon2DPointList.size(); i++) {
 		OGRFeature *poFeature;
 		poFeature = OGRFeature::CreateFeature(poLayer->GetLayerDefn());
 		for (int j = 0; j < tableNames.size(); j++)
 		{
+				//std::cout << j << ":" << tableValues[i].size() << std::endl;
+//std::cout << 1 << ":" << tableNames[j] << std::endl;
+//std::cout << 2 << ":" << tableValues[i][j] << std::endl;
 			poFeature->SetField(tableNames[j].data(), tableValues[i][j].data());
 			//std::cout << tableValues[i][j].data() << std::endl;
 		}
 		//设置点的坐标
 		OGRPoint point;
-	    point.setX(polygon2DPointList.at(i)[0]);
-	    point.setY(polygon2DPointList.at(i)[1]);
-	    
-		poFeature->SetGeometry(&point);
+	    	point.setX(polygon2DPointList.at(i)[0]);
+	    	point.setY(polygon2DPointList.at(i)[1]);
+	    	poFeature->SetGeometry(&point);
 
 		if (poLayer->CreateFeature(poFeature) != OGRERR_NONE)
-	    {
+	    	{
 			printf("Failed to create feature in shapefile.\n");
-		    return 0;
+		    	return 0;
 		}
 		OGRFeature::DestroyFeature(poFeature);
-}
-
+	}
 	GDALClose(poDstDS);
 	return 1;
 }

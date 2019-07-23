@@ -3,7 +3,7 @@
 #include "autotracktool.h"
 #include "NtAccessManager.h"
 
-std::string g_version = "0.0.2";
+std::string g_version = "0.0.4";
 
 void displayHelp(int argc, char* argv[])
 {
@@ -47,7 +47,9 @@ int main(int argc, char *argv[]) {
 	std::vector<std::string> fieldNames = ntAccessManager->getFieldNames();
 	std::vector<std::vector<double> > latLongS = ntAccessManager->getLatLongs();
 	std::vector<std::vector<std::string> > tableValues = ntAccessManager->getDataValues();
-
+	
+	std::cout<<"Cow Size:"<<tableValues.size()<<std::endl;
+	std::cout<<"Col Size:"<<fieldNames.size()<<std::endl;
 	/*for (i = 0; i < fieldNames.size(); i++) {
 		std::cout<<fieldNames.at(i)<<std::endl;
 	}

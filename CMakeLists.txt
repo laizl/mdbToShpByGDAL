@@ -1,5 +1,5 @@
 ﻿PROJECT(mdb2shp)
-
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix for Debug mode, usually d on windows")
 
