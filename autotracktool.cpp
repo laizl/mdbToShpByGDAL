@@ -16,7 +16,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	GDALDriver *gdalDriver;
 
 	OGRRegisterAll();
-	CPLSetConfigOption("GDAL_DATA", "./gdaldata");
+	//CPLSetConfigOption("GDAL_DATA", "./data/gdaldata");
 
 	CPLSetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
 	//CPLSetConfigOption("SHAPE_ENCODING","");
@@ -59,7 +59,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	//return 0;
 	OGRPolygon ogrPolygon;
 	//创建一个OGRPoint对象
-	std::cout <<"polygon2DPointList:" <<polygon2DPointList.size() << std::endl;
+	std::cout <<"PointList size:" <<polygon2DPointList.size() << std::endl;
 	for (int i = 0; i < polygon2DPointList.size(); i++) {
 		OGRFeature *poFeature;
 		poFeature = OGRFeature::CreateFeature(poLayer->GetLayerDefn());
@@ -72,11 +72,13 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 			//std::cout << tableValues[i][j].data() << std::endl;
 		}
 		//设置点的坐标
+		//std::cout<<"cart_x:"<<polygon2DPointList.at(i)[0]<<std::endl;
+		//std::cout<<"cart_y:"<<polygon2DPointList.at(i)[1]<<std::endl;
 		if( polygon2DPointList.at(i)[0]+polygon2DPointList.at(i)[1] > 720 )
 		{
 			OGRSpatialReference spatialReference;
-			spatialReference.importFromEPSG(4610);//XIAN80
-			spatialReference.SetTM(0, 114, 1.0, 38500000, 0);
+			spatialReference.importFromEPSG(2383);//XIAN80
+			//spatialReference.SetTM(0, 114, 1.0, 38500000, 0);
 
 			OGRSpatialReference* pLonLat = spatialReference.CloneGeogCS();
 			//OGRCoordinateTransformation* LonLat2XY = OGRCreateCoordinateTransformation(pLonLat, &spatialReference);
@@ -97,6 +99,8 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 			OGRCoordinateTransformation::DestroyCT(LonLat2XY);
 			LonLat2XY = NULL;
 		}
+		//std::cout<<"geo_x:"<<polygon2DPointList.at(i)[0]<<std::endl;
+		//std::cout<<"geo_y:"<<polygon2DPointList.at(i)[1]<<std::endl;
 		OGRPoint point;
 		point.setX(polygon2DPointList.at(i)[0]);
 		point.setY(polygon2DPointList.at(i)[1]);

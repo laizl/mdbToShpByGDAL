@@ -3,7 +3,7 @@
 #include "autotracktool.h"
 #include "NtAccessManager.h"
 
-std::string g_version = "0.0.4";
+std::string g_version = "0.1.2";
 
 void displayHelp(int argc, char* argv[])
 {
@@ -73,3 +73,4 @@ int main(int argc, char *argv[]) {
 	
 	return 0;
 }
+
