@@ -56,7 +56,6 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 
 	int latIndex = -1;
 	int longIndex = -1;
-
 	mdb = mdb_open (mdbFileName.c_str(), MDB_NOFLAGS);
 	if (!mdb)
 	{
