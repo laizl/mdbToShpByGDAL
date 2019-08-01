@@ -8,7 +8,7 @@
 #include "autotracktool.h"
 
 autoTracktool::autoTracktool() {
-
+	_epsgCode = 2383;
 }
 int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, std::string fileName, std::vector<std::vector<double> > polygon2DPointList, std::vector<std::vector<std::string> > tableValues)
 {
@@ -36,7 +36,8 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 
 	//const char *WKT = poDstDS->GetProjectionRef();
 	OGRSpatialReference* oSRS = new OGRSpatialReference("");
-	oSRS->SetWellKnownGeogCS("WGS84");
+	//oSRS->SetWellKnownGeogCS("WGS84");
+	oSRS->importFromEPSG(_epsgCode);//XIAN80
 
 	OGRLayer *poLayer;
 	//poLayer = poDstDS->CreateLayer("polygon_out", NULL, wkbPolygon, NULL);
@@ -77,7 +78,7 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 		if( polygon2DPointList.at(i)[0]+polygon2DPointList.at(i)[1] > 720 )
 		{
 			OGRSpatialReference spatialReference;
-			spatialReference.importFromEPSG(2383);//XIAN80
+			spatialReference.importFromEPSG(_epsgCode);//XIAN80
 			//spatialReference.SetTM(0, 114, 1.0, 38500000, 0);
 
 			OGRSpatialReference* pLonLat = spatialReference.CloneGeogCS();

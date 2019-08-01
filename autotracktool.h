@@ -22,7 +22,7 @@ public:
 public:
 	int exportPolygonToShpFile(std::vector<std::string> tableNames, std::string fileName, std::vector<std::vector<double> > polygon2DPointList, std::vector<std::vector<std::string> > tableValues);
 	int createShpFileTest();
-
+	int _epsgCode;
 };	
 	
 	

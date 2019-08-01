@@ -95,15 +95,19 @@ void NtAccessManager::testReadMdb(std::string mdbFileName){
 		{
 			std::vector<double> tempLatLongList;
 			std::vector<std::string> temList;
+			tempLatLongList.push_back(0.0);
+			tempLatLongList.push_back(0.0);
 			//fprintf (stdout, "{\t\t\t\t/* %6d */\n\t", count);
 			for  (j = 0; j < table->num_cols; j++) 
 			{
 				tempFieldName = bound_values [j];
 				if(j==latIndex){
-					tempLatLongList.push_back(atof(tempFieldName.c_str()));
+					//tempLatLongList.push_back(atof(tempFieldName.c_str()));
+					tempLatLongList.at(0) = atof(tempFieldName.c_str());
 				}
 				if(j==longIndex){
-					tempLatLongList.push_back(atof(tempFieldName.c_str()));
+					//tempLatLongList.push_back(atof(tempFieldName.c_str()));
+					tempLatLongList.at(1) = atof(tempFieldName.c_str());
 				}
 				temList.push_back(tempFieldName);
 			}
