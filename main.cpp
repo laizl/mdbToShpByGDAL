@@ -3,7 +3,7 @@
 #include "autotracktool.h"
 #include "NtAccessManager.h"
 
-std::string g_version = "0.1.5";
+std::string g_version = "0.1.8";
 
 void displayHelp(int argc, char* argv[])
 {
@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
 	std::string latFieldString = "N";
 	std::string longFieldString = "E";
 	std::string epsgString = "2383";
+	std::string outputEpsgString = "4326";
 	if(argc > 3){
 		tableName = argv[3];
 	}
@@ -43,6 +44,9 @@ int main(int argc, char *argv[]) {
 	}
 	if(argc > 6){
 		epsgString = argv[6];
+	}
+	if(argc > 7){
+		outputEpsgString = argv[7];
 	}
 	//从数据库中获取数据
 	NtAccessManager *ntAccessManager = new NtAccessManager(tableName, latFieldString, longFieldString);
@@ -74,6 +78,7 @@ int main(int argc, char *argv[]) {
 	autoTracktool *aTool = new autoTracktool();
 	// aTool->createShpFileTest();
 	aTool->_epsgCode = atoi(epsgString.c_str());
+	aTool->_outputEpsgCode = atoi(outputEpsgString.c_str());
 	aTool->exportPolygonToShpFile(fieldNames,outputFileName, latLongS,tableValues);
 	
 	return 0;

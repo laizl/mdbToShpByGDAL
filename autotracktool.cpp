@@ -9,6 +9,7 @@
 
 autoTracktool::autoTracktool() {
 	_epsgCode = 2383;
+	_outputEpsgCode = 4326;
 }
 int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, std::string fileName, std::vector<std::vector<double> > polygon2DPointList, std::vector<std::vector<std::string> > tableValues)
 {
@@ -37,8 +38,8 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 	//const char *WKT = poDstDS->GetProjectionRef();
 	OGRSpatialReference* oSRS = new OGRSpatialReference("");
 	//oSRS->SetWellKnownGeogCS("WGS84");
-	oSRS->importFromEPSG(_epsgCode);//XIAN80
-
+	oSRS->importFromEPSG(_outputEpsgCode);//XIAN80
+	std::cout<<"Output epsg code:"<<_outputEpsgCode<<std::endl;
 	OGRLayer *poLayer;
 	//poLayer = poDstDS->CreateLayer("polygon_out", NULL, wkbPolygon, NULL);
 	poLayer = poDstDS->CreateLayer("point_out", oSRS, wkbPoint, NULL);
@@ -81,7 +82,10 @@ int autoTracktool::exportPolygonToShpFile(std::vector<std::string> tableNames, s
 			spatialReference.importFromEPSG(_epsgCode);//XIAN80
 			//spatialReference.SetTM(0, 114, 1.0, 38500000, 0);
 
-			OGRSpatialReference* pLonLat = spatialReference.CloneGeogCS();
+			//OGRSpatialReference* pLonLat = spatialReference.CloneGeogCS();
+			OGRSpatialReference* pLonLat = new OGRSpatialReference("");
+			pLonLat->importFromEPSG(_outputEpsgCode);//XIAN80
+
 			//OGRCoordinateTransformation* LonLat2XY = OGRCreateCoordinateTransformation(pLonLat, &spatialReference);
 			OGRCoordinateTransformation* LonLat2XY = OGRCreateCoordinateTransformation(&spatialReference, pLonLat);
 
